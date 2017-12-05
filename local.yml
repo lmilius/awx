@@ -1,3 +1,4 @@
 ---
+- hosts: all
   become: true
 - import_playbook: installer/install.yml
