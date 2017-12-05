@@ -883,7 +883,7 @@ class InventoryUpdateAccess(BaseAccess):
     prefetch_related = ('unified_job_template', 'instance_group',)
 
     def filtered_queryset(self):
-        return qs.filter(inventory_source__inventory__in=Inventory.accessible_pk_qs(self.user, 'read_role'))
+        return self.model.objects.filter(inventory_source__inventory__in=Inventory.accessible_pk_qs(self.user, 'read_role'))
 
     def can_cancel(self, obj):
         if not obj.can_cancel:
@@ -1939,6 +1939,7 @@ class UnifiedJobTemplateAccess(BaseAccess):
     prefetch_related = (
         'last_job',
         'current_job',
+        'credentials__credential_type',
         Prefetch('labels', queryset=Label.objects.all().order_by('name')),
     )
 
@@ -1982,6 +1983,7 @@ class UnifiedJobAccess(BaseAccess):
         'unified_job_node__workflow_job',
         'unified_job_template',
         'instance_group',
+        'credentials__credential_type',
         Prefetch('labels', queryset=Label.objects.all().order_by('name')),
     )
 

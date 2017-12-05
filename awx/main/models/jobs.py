@@ -173,6 +173,10 @@ class JobOptions(BaseModel):
         return list(self.credentials.filter(credential_type__kind='cloud'))
 
     @property
+    def vault_credentials(self):
+        return list(self.credentials.filter(credential_type__kind='vault'))
+
+    @property
     def credential(self):
         cred = self.get_deprecated_credential('ssh')
         if cred is not None:
@@ -185,9 +189,10 @@ class JobOptions(BaseModel):
             return cred.pk
 
     def get_deprecated_credential(self, kind):
-        try:
-            return self.credentials.filter(credential_type__kind=kind).first()
-        except IndexError:
+        for cred in self.credentials.all():
+            if cred.credential_type.kind == kind:
+                return cred
+        else:
             return None
 
     # TODO: remove when API v1 is removed
@@ -221,7 +226,6 @@ class JobTemplate(UnifiedJobTemplate, JobOptions, SurveyJobTemplateMixin, Resour
     playbook) to an inventory source with a given credential.
     '''
     SOFT_UNIQUE_TOGETHER = [('polymorphic_ctype', 'name')]
-    PASSWORD_FIELDS = ('credential', 'vault_credential')
 
     class Meta:
         app_label = 'main'
@@ -696,6 +700,17 @@ class Job(UnifiedJob, JobOptions, SurveyJobMixin, JobNotificationMixin, TaskMana
         if not selected_groups:
             return self.global_instance_groups
         return selected_groups
+
+    def awx_meta_vars(self):
+        r = super(Job, self).awx_meta_vars()
+        if self.project:
+            for name in ('awx', 'tower'):
+                r['{}_project_revision'.format(name)] = self.project.scm_revision
+        if self.job_template:
+            for name in ('awx', 'tower'):
+                r['{}_job_template_id'.format(name)] = self.job_template.pk
+                r['{}_job_template_name'.format(name)] = self.job_template.name
+        return r
 
     '''
     JobNotificationMixin

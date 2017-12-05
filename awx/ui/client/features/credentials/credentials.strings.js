@@ -17,7 +17,9 @@ function CredentialsStrings (BaseString) {
     ns.inputs = {
         GROUP_TITLE: t.s('Type Details'),
         ORGANIZATION_PLACEHOLDER: t.s('SELECT AN ORGANIZATION'),
-        CREDENTIAL_TYPE_PLACEHOLDER: t.s('SELECT A CREDENTIAL TYPE')
+        CREDENTIAL_TYPE_PLACEHOLDER: t.s('SELECT A CREDENTIAL TYPE'),
+        GCE_FILE_INPUT_LABEL: t.s('Service Account JSON File'),
+        GCE_FILE_INPUT_HELP_TEXT: t.s('Provide account information using Google Compute Engine JSON credentials file.')
     };
 
     ns.add = {
@@ -26,11 +28,6 @@ function CredentialsStrings (BaseString) {
 
     ns.permissions = {
         TITLE: t.s('CREDENTIALS PERMISSIONS')
-    };
-
-    ns.deleteCredential = {
-        CONFIRM: t.s('Are you sure you want to delete this credential?'),
-        INVALIDATE: t.s('Doing so will invalidate the following:')
     };
 }
 
