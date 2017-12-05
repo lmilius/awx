@@ -186,6 +186,7 @@
       MEMCACHED_PORT: "11211"
       AWX_ADMIN_USER: "{{ default_admin_user|default('admin') }}"
       AWX_ADMIN_PASSWORD: "{{ default_admin_password|default('password') }}"
+      VIRTUAL_HOST: "awx.home.milius.lab"
 
 - name: Activate AWX Task Container
   docker_container:
